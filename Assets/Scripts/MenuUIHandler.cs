@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Sets the script to be executed later than all default scripts
 // This is helpful for UI, since other things may need to be initialized before setting the UI
@@ -12,13 +14,41 @@ public class MenuUIHandler : MonoBehaviour
 
     public void NewColorSelected(Color color)
     {
+        MainManager.Instance.TeamColor = color;
         // add code here to handle when a color is selected
+        ColorPicker.SelectColor(MainManager.Instance.TeamColor);
     }
-    
+
     private void Start()
     {
         ColorPicker.Init();
         //this will call the NewColorSelected function when the color picker have a color button clicked.
         ColorPicker.onColorChanged += NewColorSelected;
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene("Main");
+        
+    }
+
+    public void ExitGame()
+    {
+        MainManager.Instance.SaveColor();
+
+        EditorApplication.ExitPlaymode();
+
+        Application.Quit();
+    }
+
+    public void SaveColorClicked()
+    {
+        MainManager.Instance.SaveColor();
+    }
+
+    public void LoadColorClicked()
+    {
+        MainManager.Instance.LoadColor();
+        ColorPicker.SelectColor(MainManager.Instance.TeamColor);
     }
 }
